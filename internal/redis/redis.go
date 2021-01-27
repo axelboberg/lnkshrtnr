@@ -1,18 +1,26 @@
 package redis
 
 import (
+	"os"
 	"log"
 	"context"
 	"github.com/go-redis/redis/v8"
 	"github.com/axelboberg/lnkshrtnr/internal/random"
 )
 
+var redisAddr = os.Getenv("REDIS_HOST")
+
 var ctx = context.Background()
 var rdb *redis.Client
 
 func Setup () {
+	if redisAddr == "" {
+		log.Fatalln("Missing env REDIS_HOST")
+	}
+
+	log.Println("Connecting to redis at " + redisAddr)
 	rdb = redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
+		Addr: redisAddr,
 		Password: "",
 		DB: 0,
 	})

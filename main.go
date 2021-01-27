@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"fmt"
 	"log"
 	"strings"
@@ -8,6 +9,8 @@ import (
 	"encoding/json"
 	"github.com/axelboberg/lnkshrtnr/internal/redis"
 )
+
+var port = os.Getenv("PORT")
 
 type LinkRequest struct {
 	URL string
@@ -79,9 +82,10 @@ func get(w http.ResponseWriter, r *http.Request) {
 }
 
 func main () {
-	log.Println("Listening on port 3000")
+	if port == "" { port = "3000" }
+	log.Println("Listening on port " + port)
 	
 	http.HandleFunc("/api/links", post)
 	http.HandleFunc("/", get)
-	http.ListenAndServe(":3000", nil)
+	http.ListenAndServe(":" + port, nil)
 }
